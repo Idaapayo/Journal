@@ -3,17 +3,17 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
     class Note extends Model {
         static associate(models) {
-            // Notes can only belong to one user
-            Note.belongsTo(models.User, { foreignKey: "userId" });
+            // define association here
         }
     }
     Note.init(
         {
             title: DataTypes.STRING,
-            content: DataTypes.TEXT,
+            text: DataTypes.TEXT,
             category: DataTypes.STRING,
             userId: {
                 type: DataTypes.INTEGER,
+                allowNull: false,
                 references: {
                     model: "Users",
                     key: "id",
