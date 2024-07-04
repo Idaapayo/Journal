@@ -1,4 +1,7 @@
 const express = require("express");
+const session = require("express-session");
+const passport = require("passport");
+const authRoutes = require("./routes/auth");
 const db = require("./models");
 
 const app = express();
@@ -13,6 +16,21 @@ app.get("/", async (req, res) => {
         res.status(500).json({ error: "Error fetching users" });
     }
 });
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(
+    session({
+        secret: "your_secret_key",
+        resave: false,
+        saveUninitialized: false,
+    }),
+);
+app.use(passport.authenticate("session"));
+
+// Routes
+app.use("/auth", authRoutes);
 
 db.sequelize
     .sync()
