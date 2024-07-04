@@ -2,6 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const authRoutes = require("./routes/auth");
+const notesRoutes = require("./routes/notes");
 const db = require("./models");
 
 const app = express();
@@ -31,6 +32,7 @@ app.use(passport.authenticate("session"));
 
 // Routes
 app.use("/auth", authRoutes);
+app.use("/notes", notesRoutes);
 
 db.sequelize
     .sync()
