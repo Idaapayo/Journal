@@ -1,7 +1,8 @@
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
-const authRoutes = require("./routes/auth");
+// const authRoutes = require("./routes/auth");
+const { router: authRoutes } = require("./routes/auth");
 const notesRoutes = require("./routes/notes");
 const db = require("./models");
 
@@ -26,6 +27,7 @@ app.use(
         secret: "your_secret_key",
         resave: false,
         saveUninitialized: false,
+        cookie: { secure: true },
     }),
 );
 app.use(passport.authenticate("session"));

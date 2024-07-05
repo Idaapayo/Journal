@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models");
 const { Sequelize } = require("sequelize");
+const { ensureAuthenticated } = require("./auth");
 
 // Create note
-router.post("/create", (req, res) => {
+router.post("/create", ensureAuthenticated, (req, res) => {
     try {
         const { title, text, category, userId } = req.body;
         const note = db.Note.create({ title, text, category, userId });
@@ -15,7 +16,7 @@ router.post("/create", (req, res) => {
 });
 
 // Update note
-router.put("/update/:id", async (req, res) => {
+router.put("/update/:id", ensureAuthenticated, async (req, res) => {
     try {
         const { id } = req.params;
         const { title, text, category } = req.body;
@@ -37,7 +38,7 @@ router.put("/update/:id", async (req, res) => {
 });
 
 // Delete note
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", ensureAuthenticated, async (req, res) => {
     try {
         const { id } = req.params;
         const note = await db.Note.findByPk(id);
@@ -52,7 +53,7 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 // Get categories
-router.get("/categories", async (req, res) => {
+router.get("/categories", ensureAuthenticated, async (req, res) => {
     try {
         const categories = await db.Note.findAll({
             attributes: [
@@ -70,17 +71,21 @@ router.get("/categories", async (req, res) => {
 });
 
 // Get notes by category
-router.get("/notesByCategory/:category", async (req, res) => {
-    try {
-        const { category } = req.params;
-        const notes = await db.Note.findAll({ where: { category } });
-        res.status(200).json(notes);
-    } catch (e) {
-        res.status(500).json({
-            message: "Error getting notes for category",
-            error: e,
-        });
-    }
-});
+router.get(
+    "/notesByCategory/:category",
+    ensureAuthenticated,
+    async (req, res) => {
+        try {
+            const { category } = req.params;
+            const notes = await db.Note.findAll({ where: { category } });
+            res.status(200).json(notes);
+        } catch (e) {
+            res.status(500).json({
+                message: "Error getting notes for category",
+                error: e,
+            });
+        }
+    },
+);
 
 module.exports = router;

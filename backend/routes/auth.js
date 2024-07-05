@@ -5,16 +5,6 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const db = require("../models");
 
-router.get("/", async (req, res) => {
-    try {
-        const users = await db.User.findAll();
-        res.json(users);
-    } catch (err) {
-        console.error("Error fetching users:", err);
-        res.status(500).json({ error: "Error fetching users" });
-    }
-});
-
 // Verify username and password
 passport.use(
     new LocalStrategy(async (username, password, done) => {
@@ -53,6 +43,13 @@ router.post("/login", passport.authenticate("local"), function (req, res) {
 router.post("/signUp", async (req, res) => {
     try {
         const { username, password } = req.body;
+        // Check if the new username is already taken
+        const existingUser = await db.User.findOne({
+            where: { username: username },
+        });
+        if (existingUser) {
+            return res.status(400).json({ message: "Username already exists" });
+        }
         const user = await db.User.create({ username, password });
         res.status(201).json({ user, message: "User created successfully" });
     } catch (e) {
@@ -63,4 +60,69 @@ router.post("/signUp", async (req, res) => {
     }
 });
 
-module.exports = router;
+// Update username
+router.put("/update-username", ensureAuthenticated, async (req, res) => {
+    try {
+        // const { id } = req.params;
+        // const { username } = req.body;
+        // const user = await db.User.findByPk(id);
+        // if (!user) {
+        //     return res.status(401).json({ message: "User not found" });
+        // }
+        // user.username = username;
+        // await user.save();
+        // res.status(200).json({ message: "User updated successfully" });
+        const { username } = req.body;
+
+        // Check if the new username is already taken
+        const existingUser = await db.User.findOne({
+            where: { username: username },
+        });
+        if (existingUser) {
+            return res.status(400).json({ message: "Username already exists" });
+        }
+
+        req.user.username = username;
+        await req.user.save();
+        // Refresh session
+        req.login(req.user, (err) => {
+            if (err) {
+                return res.status(500).json({
+                    message: "Error re-authenticating user",
+                    error: err,
+                });
+            }
+            res.status(200).json({ message: "Username updated successfully" });
+        });
+        // res.status(200).json({ message: "Username updated successfully" });
+    } catch (e) {
+        res.status(500).json({
+            message: "Error updating user",
+            userId: req.user.id,
+            error: e,
+        });
+    }
+});
+
+router.post("/logout", function (req, res, next) {
+    req.logout(function (err) {
+        if (err) {
+            return res
+                .status(500)
+                .json({ message: "Error logging out", error: err });
+        }
+        res.status(200).json({ message: "Logged out" });
+    });
+});
+
+// Middleware to ensure the user is authenticated
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.status(401).json({ message: "Unauthorized" });
+}
+
+module.exports = { ensureAuthenticated };
+
+module.exports.router = router;
