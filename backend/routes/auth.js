@@ -37,7 +37,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 router.post("/login", passport.authenticate("local"), function (req, res) {
-    res.send({ message: "Logged in", userId: req.user.id });
+    res.status(200).json({ message: "Logged in", userId: req.user.id });
 });
 
 router.post("/signUp", async (req, res) => {

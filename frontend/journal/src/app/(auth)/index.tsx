@@ -5,6 +5,7 @@ import { CustomTextInput } from "@/src/components/inputs/CustomTextInput";
 import CustomButton from "@/src/components/buttons/CustomButton";
 import * as Yup from "yup";
 import { useState } from "react";
+import { localServer } from "@/src/config/config";
 
 interface loginInitialValues extends FormikValues {
   username: string;
@@ -27,18 +28,24 @@ export default function Login() {
   // Login user
   async function handleSubmit(values: loginInitialValues) {
     try {
-      const response = await fetch("http://192.168.100.56:8081/auth/login", {
+      console.log(values);
+      const response = await fetch(`${localServer}/auth/login`, {
         method: "POST",
         headers: {
+          Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
       });
-      const data = await response.json();
-      console.log("Login successful!", data);
+      if (response.ok) {
+        setLoginError(undefined);
+        const data = await response.json();
+
+        console.log("Login successful!", data);
+      }
+
       // Handle successful login, navigation, etc.
     } catch (error) {
-      console.log(error);
       // @ts-ignore
       setLoginError(error.message);
       // Handle error, display message to user, etc.
@@ -85,7 +92,9 @@ export default function Login() {
                       : undefined
                   }
                 />
-                <Text className="text-rose-700">{loginError}</Text>
+                {loginError && (
+                  <Text className="text-rose-700">{loginError}</Text>
+                )}
                 <View className="pt-5">
                   <CustomButton onPress={() => handleSubmit()} title="Submit" />
                 </View>

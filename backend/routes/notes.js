@@ -15,6 +15,8 @@ router.post("/create", ensureAuthenticated, (req, res) => {
     }
 });
 
+// Get all notes for specific user
+
 // Update note
 router.put("/update/:id", ensureAuthenticated, async (req, res) => {
     try {
@@ -71,6 +73,7 @@ router.get("/categories", ensureAuthenticated, async (req, res) => {
 });
 
 // Get notes by category
+// Add for specific user
 router.get(
     "/notesByCategory/:category",
     ensureAuthenticated,
