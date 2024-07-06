@@ -15,7 +15,18 @@ router.post("/create", ensureAuthenticated, (req, res) => {
     }
 });
 
-// Get all notes for specific user
+// Get all (notes) for specific user
+router.get("/notes/:userId", ensureAuthenticated, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const notes = await db.Note.findAll({
+            where: { userId: userId },
+        });
+        res.status(200).json(notes);
+    } catch (e) {
+        res.status(500).json({ message: "Error creating note", error: e });
+    }
+});
 
 // Update note
 router.put("/update/:id", ensureAuthenticated, async (req, res) => {
@@ -72,19 +83,20 @@ router.get("/categories", ensureAuthenticated, async (req, res) => {
     }
 });
 
-// Get notes by category
-// Add for specific user
+// Get (notes) by category
 router.get(
-    "/notesByCategory/:category",
+    "/notesByCategory/:userId/:category",
     ensureAuthenticated,
     async (req, res) => {
         try {
-            const { category } = req.params;
-            const notes = await db.Note.findAll({ where: { category } });
+            const { userId, category } = req.params;
+            const notes = await db.Note.findAll({
+                where: { userId, category },
+            });
             res.status(200).json(notes);
         } catch (e) {
             res.status(500).json({
-                message: "Error getting notes for category",
+                message: "Error getting (notes) for category",
                 error: e,
             });
         }

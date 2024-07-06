@@ -1,11 +1,11 @@
-import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
-import MainLayout from "@/src/components/layouts/MainLayout";
+import { Text, View } from "react-native";
 import { Formik, FormikValues } from "formik";
 import { CustomTextInput } from "@/src/components/inputs/CustomTextInput";
 import CustomButton from "@/src/components/buttons/CustomButton";
 import * as Yup from "yup";
-import { useState } from "react";
+import React, { useState } from "react";
 import { localServer } from "@/src/config/config";
+import { Link } from "expo-router";
 
 interface loginInitialValues extends FormikValues {
   username: string;
@@ -43,12 +43,10 @@ export default function Login() {
 
         console.log("Login successful!", data);
       }
-
       // Handle successful login, navigation, etc.
     } catch (error) {
       // @ts-ignore
       setLoginError(error.message);
-      // Handle error, display message to user, etc.
     }
   }
 
@@ -56,6 +54,9 @@ export default function Login() {
     <View className="flex-1 justify-center items-center">
       <View className=" w-full justify-center items-center">
         <View className="w-full block max-w-sm p-6 bg-white border border-gray-200 rounded-lg  ">
+          <View className="py-5">
+            <Text className="text-xl">Login to your Journal</Text>
+          </View>
           <Formik
             initialValues={{ username: "", password: "" }}
             onSubmit={handleSubmit}
@@ -101,6 +102,12 @@ export default function Login() {
               </View>
             )}
           </Formik>
+          <View className="pt-5 flex-row gap-1">
+            <Text>Do not have an account?</Text>
+            <Link className="text-blue-500 underline" href="/signUp">
+              Sign up
+            </Link>
+          </View>
         </View>
       </View>
     </View>

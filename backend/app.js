@@ -34,7 +34,7 @@ app.use(passport.authenticate("session"));
 
 // Routes
 app.use("/auth", authRoutes);
-app.use("/notes", notesRoutes);
+app.use("/(notes)", notesRoutes);
 
 db.sequelize
     .sync()
