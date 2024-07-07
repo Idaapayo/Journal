@@ -37,7 +37,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 router.post("/login", passport.authenticate("local"), function (req, res) {
-    res.status(200).json({ message: "Logged in", userId: req.user.id });
+    res.status(200).json({ message: "Logged in", user: req.user });
 });
 
 router.post("/signUp", async (req, res) => {
@@ -120,7 +120,7 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "This request is unauthorized" });
 }
 
 module.exports = { ensureAuthenticated };

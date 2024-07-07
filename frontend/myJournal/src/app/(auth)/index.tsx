@@ -3,9 +3,10 @@ import { Formik, FormikValues } from "formik";
 import { CustomTextInput } from "@/src/components/inputs/CustomTextInput";
 import CustomButton from "@/src/components/buttons/CustomButton";
 import * as Yup from "yup";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { localServer } from "@/src/config/config";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { UserContext } from "@/src/contexts/contexts";
 
 interface loginInitialValues extends FormikValues {
   username: string;
@@ -14,6 +15,13 @@ interface loginInitialValues extends FormikValues {
 
 export default function Login() {
   const [loginError, setLoginError] = useState<string | undefined>(undefined);
+  const context = useContext(UserContext);
+
+  if (!context) {
+    throw new Error("UserContext must be used within a UserProvider");
+  }
+
+  const { setUser } = context;
 
   // Define validation schema
   const loginSchema = Yup.object().shape({
@@ -40,10 +48,10 @@ export default function Login() {
       if (response.ok) {
         setLoginError(undefined);
         const data = await response.json();
-
+        setUser(data.user);
         console.log("Login successful!", data);
+        router.navigate("/(tabs)/(notes)");
       }
-      // Handle successful login, navigation, etc.
     } catch (error) {
       // @ts-ignore
       setLoginError(error.message);

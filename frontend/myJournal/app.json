@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "journal",
-    "slug": "journal",
+    "name": "myJournal",
+    "slug": "myJournal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

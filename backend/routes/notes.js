@@ -16,7 +16,7 @@ router.post("/create", ensureAuthenticated, (req, res) => {
 });
 
 // Get all (notes) for specific user
-router.get("/notes/:userId", ensureAuthenticated, async (req, res) => {
+router.get("/getNotes/:userId", ensureAuthenticated, async (req, res) => {
     try {
         const { userId } = req.params;
         const notes = await db.Note.findAll({
