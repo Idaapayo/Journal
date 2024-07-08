@@ -15,6 +15,7 @@ export interface createNoteInitialValues extends FormikValues {
   title: string;
   text: string;
   category: string;
+  userId?: number;
 }
 
 const notesValidationSchema = Yup.object().shape({

@@ -28,13 +28,9 @@ export default function NotesListCard({
         router.push(`(tabs)/(notes)/notesDetails/${id}`);
       }}
     >
-      <View className="flex-1 justify-center items-center my-2">
-        <View className=" w-full justify-center items-center">
-          <View className="w-full block max-w-sm p-6 bg-blue-50 border border-gray-200 rounded-lg  ">
-            <Text className="font-bold">{title}</Text>
-            <Text>{format(updatedAt, "yyyy-MM-dd")}</Text>
-          </View>
-        </View>
+      <View className="w-full block max-w-sm p-6 bg-white border border-gray-200 rounded-lg my-2 ">
+        <Text className="font-bold">{title}</Text>
+        <Text>{format(updatedAt, "yyyy-MM-dd")}</Text>
       </View>
     </TouchableOpacity>
   );

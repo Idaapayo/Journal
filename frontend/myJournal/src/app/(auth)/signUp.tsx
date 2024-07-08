@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import React, { useState } from "react";
 import { localServer } from "@/src/config/config";
 import { router } from "expo-router";
+import MainLayout from "@/src/components/layouts/MainLayout";
 
 interface loginInitialValues extends FormikValues {
   username: string;
@@ -50,62 +51,66 @@ export default function SignUp() {
   }
 
   return (
-    <View className="flex-1 justify-center items-center">
-      <View className=" w-full justify-center items-center">
-        <View className="w-full block max-w-sm p-6 bg-white border border-gray-200 rounded-lg  ">
-          <View className="py-5">
-            <Text className="text-xl">Create an account for your Journal</Text>
-          </View>
-          <Formik
-            initialValues={{ username: "", password: "" }}
-            onSubmit={handleSubmit}
-            validationSchema={signUpSchema}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-            }) => (
-              <View>
-                <CustomTextInput
-                  onChangeText={handleChange("username")}
-                  onBlur={handleBlur("username")}
-                  value={values.username}
-                  title="Enter your username"
-                  error={
-                    touched.username && errors.username
-                      ? errors.username
-                      : undefined
-                  }
-                />
-                <CustomTextInput
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  value={values.password}
-                  title="Enter your password"
-                  error={
-                    touched.password && errors.password
-                      ? errors.password
-                      : undefined
-                  }
-                />
-                {signUpError && (
-                  <Text className="text-rose-700">{signUpError}</Text>
-                )}
-                <View className="pt-5">
-                  <CustomButton
-                    onPress={() => handleSubmit()}
-                    title="Sign up"
+    <MainLayout>
+      <View className="flex-1 justify-center items-center">
+        <View className=" w-full justify-center items-center">
+          <View className="w-full block max-w-sm p-6 bg-white border border-gray-200 rounded-lg  ">
+            <View className="py-5">
+              <Text className="text-xl">
+                Create an account for your Journal
+              </Text>
+            </View>
+            <Formik
+              initialValues={{ username: "", password: "" }}
+              onSubmit={handleSubmit}
+              validationSchema={signUpSchema}
+            >
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                touched,
+              }) => (
+                <View>
+                  <CustomTextInput
+                    onChangeText={handleChange("username")}
+                    onBlur={handleBlur("username")}
+                    value={values.username}
+                    title="Enter your username"
+                    error={
+                      touched.username && errors.username
+                        ? errors.username
+                        : undefined
+                    }
                   />
+                  <CustomTextInput
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    value={values.password}
+                    title="Enter your password"
+                    error={
+                      touched.password && errors.password
+                        ? errors.password
+                        : undefined
+                    }
+                  />
+                  {signUpError && (
+                    <Text className="text-rose-700">{signUpError}</Text>
+                  )}
+                  <View className="pt-5">
+                    <CustomButton
+                      onPress={() => handleSubmit()}
+                      title="Sign up"
+                    />
+                  </View>
                 </View>
-              </View>
-            )}
-          </Formik>
+              )}
+            </Formik>
+          </View>
         </View>
       </View>
-    </View>
+    </MainLayout>
   );
 }

@@ -14,7 +14,7 @@ export default function CustomTextArea(props: CustomTextAreaProps) {
         <TextInput
           {...props}
           className="px-3 py-2 mb-3 bg-gray-100 border border-gray-300 rounded-lg"
-          numberOfLines={4}
+          numberOfLines={15}
           editable
           multiline
         />

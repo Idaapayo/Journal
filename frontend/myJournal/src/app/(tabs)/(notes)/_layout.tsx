@@ -8,6 +8,7 @@ export default function NotesLayout() {
       }}
     >
       <Stack.Screen name="notesDetails" />
+      <Stack.Screen name="createNewNote" />
     </Stack>
   );
 }
