@@ -16,7 +16,7 @@ export function CustomTextInput(props: CustomTextInputProps) {
           className="px-3 py-2 mb-3 bg-gray-100 border border-gray-300 rounded-lg"
         />
       </View>
-      {props.error && <Text style={{ color: "red" }}>{props.error}</Text>}
+      {props.error && <Text className="text-rose-700">{props.error}</Text>}
     </View>
   );
 }

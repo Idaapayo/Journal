@@ -1,4 +1,3 @@
-import { Note } from "@/src/types/note";
 import CreateNote, {
   createNoteInitialValues,
 } from "@/src/components/forms/CreateNote";
@@ -6,10 +5,13 @@ import { localServer } from "@/src/config/config";
 import { router } from "expo-router";
 import MainLayout from "@/src/components/layouts/MainLayout";
 import { ScrollView, Text } from "react-native";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "@/src/contexts/contexts";
+
 export default function CreateNewNote() {
   const { user } = useContext(UserContext) || {};
+
+  const [submitError, setSubmitError] = useState<string | undefined>(undefined);
 
   const initialValues: createNoteInitialValues = {
     text: "",
@@ -29,17 +31,21 @@ export default function CreateNewNote() {
       });
       if (response.ok) {
         router.back();
-        console.log("note created");
       }
     } catch (e) {
-      console.log("error", e);
+      // @ts-ignore
+      setSubmitError(e.message as string);
     }
   }
   return (
     <MainLayout>
       <Text className="py-2 font-bold text-xl">Create your note</Text>
       <ScrollView>
-        <CreateNote initialValues={initialValues} handleSubmit={handleSubmit} />
+        <CreateNote
+          initialValues={initialValues}
+          handleSubmit={handleSubmit}
+          submitError={submitError}
+        />
       </ScrollView>
     </MainLayout>
   );

@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-// const User = require("../models/user");
 const LocalStrategy = require("passport-local");
 const db = require("../models");
+const bcrypt = require("bcryptjs");
 
 // Verify username and password
 passport.use(
@@ -60,49 +60,45 @@ router.post("/signUp", async (req, res) => {
     }
 });
 
-// Update username
-router.put("/update-username", ensureAuthenticated, async (req, res) => {
-    try {
-        // const { id } = req.params;
-        // const { username } = req.body;
-        // const user = await db.User.findByPk(id);
-        // if (!user) {
-        //     return res.status(401).json({ message: "User not found" });
-        // }
-        // user.username = username;
-        // await user.save();
-        // res.status(200).json({ message: "User updated successfully" });
-        const { username } = req.body;
-
-        // Check if the new username is already taken
-        const existingUser = await db.User.findOne({
-            where: { username: username },
-        });
-        if (existingUser) {
-            return res.status(400).json({ message: "Username already exists" });
-        }
-
-        req.user.username = username;
-        await req.user.save();
-        // Refresh session
-        req.login(req.user, (err) => {
-            if (err) {
-                return res.status(500).json({
-                    message: "Error re-authenticating user",
-                    error: err,
+router.put(
+    "/updateCredentials/:userId",
+    ensureAuthenticated,
+    async (req, res) => {
+        try {
+            const userId = req.params.userId;
+            const { username, password } = req.body;
+            // Check if username and password are provided
+            if (!username || !password) {
+                return res.status(400).json({
+                    message: "New username and new password are required.",
                 });
             }
-            res.status(200).json({ message: "Username updated successfully" });
-        });
-        // res.status(200).json({ message: "Username updated successfully" });
-    } catch (e) {
-        res.status(500).json({
-            message: "Error updating user",
-            userId: req.user.id,
-            error: e,
-        });
-    }
-});
+            // Check if the new username is already taken
+            const existingUser = await db.User.findOne({
+                where: { username: username },
+            });
+            if (existingUser && existingUser.id !== parseInt(userId, 10)) {
+                return res
+                    .status(400)
+                    .json({ message: "Username already exists" });
+            }
+            // Update user's credentials in the database
+            const updatedUser = await db.User.update(
+                {
+                    username: username,
+                    password: await bcrypt.hash(password, 10),
+                },
+                { where: { id: userId } },
+            );
+            res.status(200).json(updatedUser);
+        } catch (e) {
+            res.status(500).json({
+                error: e.message,
+                message: "Error updating credentials",
+            });
+        }
+    },
+);
 
 router.post("/logout", function (req, res, next) {
     req.logout(function (err) {

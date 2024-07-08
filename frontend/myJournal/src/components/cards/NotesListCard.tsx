@@ -6,7 +6,6 @@ import {
   Text,
 } from "react-native";
 import { format } from "date-fns";
-import { navigate } from "expo-router/build/global-state/routing";
 import { router } from "expo-router";
 
 interface NotesListCardProps extends TouchableOpacityProps {

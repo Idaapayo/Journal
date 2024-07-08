@@ -9,6 +9,7 @@ import CustomTextArea from "@/src/components/inputs/CustomTextArea";
 interface createNoteProps {
   initialValues: createNoteInitialValues;
   handleSubmit: (values: createNoteInitialValues) => void;
+  submitError?: string;
 }
 
 export interface createNoteInitialValues extends FormikValues {
@@ -27,6 +28,7 @@ const notesValidationSchema = Yup.object().shape({
 export default function CreateNote({
   initialValues,
   handleSubmit,
+  submitError,
 }: createNoteProps) {
   const [notesError, setNotesError] = useState<string | undefined>(undefined);
   return (
@@ -71,6 +73,9 @@ export default function CreateNote({
               error={touched.text && errors.text ? errors.text : undefined}
             />
             {notesError && <Text className="text-rose-700">{notesError}</Text>}
+            {submitError && (
+              <Text className="text-rose-700">{submitError}</Text>
+            )}
             <View className="pt-5">
               <CustomButton onPress={() => handleSubmit()} title="Save" />
             </View>

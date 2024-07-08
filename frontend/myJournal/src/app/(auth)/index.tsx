@@ -16,6 +16,7 @@ interface loginInitialValues extends FormikValues {
 
 export default function Login() {
   const [loginError, setLoginError] = useState<string | undefined>(undefined);
+  const [userError, setUserError] = useState<string | undefined>(undefined);
   const context = useContext(UserContext);
 
   if (!context) {
@@ -37,7 +38,6 @@ export default function Login() {
   // Login user
   async function handleSubmit(values: loginInitialValues) {
     try {
-      console.log(values);
       const response = await fetch(`${localServer}/auth/login`, {
         method: "POST",
         headers: {
@@ -46,12 +46,15 @@ export default function Login() {
         },
         body: JSON.stringify(values),
       });
+      console.log(response);
       if (response.ok) {
         setLoginError(undefined);
         const data = await response.json();
         setUser(data.user);
         console.log("Login successful!", data);
         router.navigate("/(tabs)/(notes)");
+      } else {
+        setUserError("Wrong username or password");
       }
     } catch (error) {
       // @ts-ignore
@@ -97,6 +100,8 @@ export default function Login() {
                     onBlur={handleBlur("password")}
                     value={values.password}
                     title="Enter your password"
+                    textContentType="password"
+                    secureTextEntry={true}
                     error={
                       touched.password && errors.password
                         ? errors.password
@@ -105,6 +110,9 @@ export default function Login() {
                   />
                   {loginError && (
                     <Text className="text-rose-700">{loginError}</Text>
+                  )}
+                  {userError && (
+                    <Text className="text-rose-700">{userError}</Text>
                   )}
                   <View className="pt-5">
                     <CustomButton

@@ -13,6 +13,7 @@ import ShowCategories from "@/src/components/categories/ShowCategories";
 export default function NotesList() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [fetchNotesError, setFetchNotesError] = useState("");
 
   const { user } = useContext(UserContext) || {};
 
@@ -50,7 +51,7 @@ export default function NotesList() {
         }
       }
     } catch (e) {
-      console.log("the error", e);
+      setFetchNotesError("There was a problem getting your journals");
     }
   };
 
@@ -89,6 +90,9 @@ export default function NotesList() {
         >
           <Ionicons name="add" size={30} color="white" />
         </TouchableOpacity>
+        {fetchNotesError && (
+          <Text className="text-rose-700 text-center">{fetchNotesError}</Text>
+        )}
       </MainLayout>
     </SafeAreaView>
   );

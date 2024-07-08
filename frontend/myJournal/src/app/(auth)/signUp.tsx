@@ -89,6 +89,8 @@ export default function SignUp() {
                     onChangeText={handleChange("password")}
                     onBlur={handleBlur("password")}
                     value={values.password}
+                    textContentType="password"
+                    secureTextEntry={true}
                     title="Enter your password"
                     error={
                       touched.password && errors.password

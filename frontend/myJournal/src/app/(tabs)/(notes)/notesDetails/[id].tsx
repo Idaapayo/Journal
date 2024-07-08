@@ -6,13 +6,18 @@ import { localServer } from "@/src/config/config";
 import CreateNote, {
   createNoteInitialValues,
 } from "@/src/components/forms/CreateNote";
-import { SafeAreaView, ScrollView } from "react-native";
+import { SafeAreaView, ScrollView, TouchableOpacity, Text } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function NotesDetails() {
   const [note, setNote] = useState<Note | undefined>(undefined);
   const [fetchNoteError, setFetchNoteError] = useState<string | undefined>(
     undefined,
   );
+  const [deleteNoteError, setDeleteNoteError] = useState<string | undefined>(
+    undefined,
+  );
+
   const { id } = useLocalSearchParams();
 
   // Fetch note
@@ -53,7 +58,22 @@ export default function NotesDetails() {
       });
       if (response.ok) {
         router.back();
-        console.log("note updated");
+      }
+    } catch (e) {
+      console.log("error", e);
+    }
+  }
+
+  async function deleteNote() {
+    try {
+      const response = await fetch(`${localServer}/notes/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      if (response.ok) {
+        router.back();
       }
     } catch (e) {
       console.log("error", e);
@@ -63,7 +83,23 @@ export default function NotesDetails() {
   return (
     <SafeAreaView>
       <MainLayout>
+        <TouchableOpacity
+          className={`absolute top-0 right-2 z-10 my-1  bg-red-500 p-2 rounded-full`}
+          onPress={deleteNote}
+        >
+          <Ionicons name="trash" size={20} color="white" />
+        </TouchableOpacity>
         <ScrollView>
+          {fetchNoteError && (
+            <Text className="text-red-500 text-center mt-2">
+              {fetchNoteError}
+            </Text>
+          )}
+          {deleteNoteError && (
+            <Text className="text-red-500 text-center mt-2">
+              {deleteNoteError}
+            </Text>
+          )}
           {note && (
             <CreateNote initialValues={note} handleSubmit={handlesubmit} />
           )}
