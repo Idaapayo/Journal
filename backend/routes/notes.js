@@ -28,6 +28,20 @@ router.get("/getNotes/:userId", ensureAuthenticated, async (req, res) => {
     }
 });
 
+// Get note
+router.get("/getNote/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const note = await db.Note.findByPk(id);
+        if (!note) {
+            return res.status(404).json({ message: "Note not found" });
+        }
+        res.status(200).json(note);
+    } catch (e) {
+        res.status(500).json({ message: "Error fetching note", error: e });
+    }
+});
+
 // Update note
 router.put("/update/:id", ensureAuthenticated, async (req, res) => {
     try {
